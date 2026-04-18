@@ -24,4 +24,8 @@ public class MoviesStore {
     public void clear() {
         movies.clear();
     }
+
+    public List<Movie> getAll() {
+        return movies;
+    }
 }

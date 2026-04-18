@@ -8,37 +8,47 @@ import java.io.IOException;
 import java.util.List;
 
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 public class MoviesHandler extends BaseHttpHandler {
 
-    private final MoviesStore moviesStore;
+    private final MoviesStore store;
 
-    public MoviesHandler(MoviesStore moviesStore) {
-        this.moviesStore = moviesStore;
+    public MoviesHandler(MoviesStore store) {
+        this.store = store;
     }
 
     @Override
     public void handle(HttpExchange ex) throws IOException {
         String method = ex.getRequestMethod();
+
         if (method.equalsIgnoreCase("GET")) {
-            List<Movie> movies = moviesStore.getMovies();
+            List<Movie> movies = store.getAll();
 
             if (movies.isEmpty()) {
                 sendJson(ex, 200, "[]");
-            } else {
-                StringBuilder sb = new StringBuilder();
-
-                for (int i = 0; i < movies.size(); i++) {
-                    sb.append(movies.get(i).toJson());
-                    if (i < movies.size() - 1) {
-                        sb.append(",");
-                    }
-                }
+                return;
             }
 
+            StringBuilder json = new StringBuilder("[");
+            for (int i = 0; i < movies.size(); i++) {
+                json.append(movies.get(i).toJson());
+                if (i < movies.size() - 1) {
+                    json.append(",");
+                }
+            }
+            json.append("]");
+
+            sendJson(ex, 200, json.toString());
         } else {
             ex.sendResponseHeaders(405, -1);
             ex.close();
         }
-
     }
 }
