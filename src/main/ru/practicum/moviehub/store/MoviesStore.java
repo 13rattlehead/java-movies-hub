@@ -9,10 +9,6 @@ import java.util.List;
 public class MoviesStore {
     private final List<Movie> movies = new ArrayList<>();
 
-    public List<Movie> getMovies() {
-        return movies;
-    }
-
     public void addMovie(Movie movie) {
         movies.add(movie);
     }
@@ -26,6 +22,6 @@ public class MoviesStore {
     }
 
     public List<Movie> getAll() {
-        return movies;
+        return new ArrayList<>(movies);
     }
 }

@@ -17,8 +17,7 @@ public class Movie {
         return title;
     }
 
-
     public String toJson() {
-        return "{\"id\":\"" + id + "\",\"title\":\"" + title + "\"}";
+        return "{\"id\":" + id + ",\"title\":\"" + title + "\"}";
     }
 }
