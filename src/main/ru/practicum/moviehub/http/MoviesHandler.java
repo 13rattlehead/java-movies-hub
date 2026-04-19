@@ -8,14 +8,6 @@ import java.io.IOException;
 import java.util.List;
 
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 public class MoviesHandler extends BaseHttpHandler {
 
     private final MoviesStore store;
