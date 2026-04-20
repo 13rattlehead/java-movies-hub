@@ -25,16 +25,16 @@ public class MoviesApiTest {
     private static MoviesServer server;
     private static HttpClient client;
     private static MoviesStore store;
+    private static final int port = 8080;
 
     @BeforeAll
     static void beforeAll() throws Exception {
         store = new MoviesStore();
-        server = new MoviesServer(store, 8080);
+        server = new MoviesServer(store, port);
 
         System.out.println("Запускаем MoviesServer");
         server.start();
 
-        waitForServerReady();
 
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
 
@@ -45,40 +45,6 @@ public class MoviesApiTest {
         System.out.println("Тестовый сервер и HTTP-клиент готовы");
     }
 
-    private static void waitForServerReady() throws Exception {
-        System.out.println("Ожидаем запуска сервера на порту 8080");
-
-        // временный клиент только для проверки
-        HttpClient tempClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(2))
-                .build();
-
-        for (int i = 0; i < 100; i++) {
-            try {
-                HttpRequest healthCheck = HttpRequest.newBuilder()
-                        .uri(URI.create(BASE + "/movies"))
-                        .GET()
-                        .build();
-
-                HttpResponse<Void> resp = tempClient.send(healthCheck,
-                        HttpResponse.BodyHandlers.discarding());
-
-                System.out.println("Сервер ответил статусом: " + resp.statusCode());
-                if (resp.statusCode() == 200) {
-                    System.out.println("Сервер полностью готов!");
-                    return;
-                }
-            } catch (Exception e) {
-                if (i % 10 == 0) {   // каждую секунду выводим
-                    System.out.println("Попытка " + (i + 1) + "/100... ");
-                }
-            }
-            Thread.sleep(100);
-        }
-
-        throw new RuntimeException("Сервер НЕ запустился за 10 секунд! " +
-                "Скорее всего порт 8080 занят предыдущим процессом.");
-    }
 
     @BeforeEach
     void beforeEach() {

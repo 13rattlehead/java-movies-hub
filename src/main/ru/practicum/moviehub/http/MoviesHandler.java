@@ -11,9 +11,15 @@ import java.util.List;
 public class MoviesHandler extends BaseHttpHandler {
 
     private final MoviesStore store;
+    private static final int responseOK = 200;
+    private static final int responseMethodNotAllowed = 405;
 
     public MoviesHandler(MoviesStore store) {
         this.store = store;
+    }
+
+    public int getResponseOK() {
+        return responseOK;
     }
 
     @Override
@@ -24,7 +30,7 @@ public class MoviesHandler extends BaseHttpHandler {
             List<Movie> movies = store.getAll();
 
             if (movies.isEmpty()) {
-                sendJson(ex, 200, "[]");
+                sendJson(ex, responseOK, "[]");
                 return;
             }
 
@@ -37,9 +43,9 @@ public class MoviesHandler extends BaseHttpHandler {
             }
             json.append("]");
 
-            sendJson(ex, 200, json.toString());
+            sendJson(ex, responseOK, json.toString());
         } else {
-            ex.sendResponseHeaders(405, -1);
+            ex.sendResponseHeaders(responseMethodNotAllowed, -1);
             ex.close();
         }
     }
